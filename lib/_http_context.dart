@@ -19,31 +19,33 @@ class HttpContext {
     return jsonDecode(content) as Map;
   }
 
-  statusCode(int code) {
-    this.response.statusCode = code;
-  }
+  statusCode(int code) => this.response.statusCode = code;
+
+  close() => this.response.close();
 
   text(String content) {
     this.response
       ..headers.set('Content-Type', 'text/plain')
-      ..write(content)
-      ..close();
+      ..write(content);
+
+    this.close();
   }
 
   html(String content) {
     this.response
       ..headers.set('Content-Type', 'text/html')
-      ..write(content)
-      ..close();
+      ..write(content);
+
+    this.close();
   }
 
   json(Map content) {
-
     final json = jsonEncode(content);
 
     this.response
       ..headers.set('Content-Type', 'application/json')
-      ..write(json)
-      ..close();
+      ..write(json);
+
+    this.close();
   }
 }

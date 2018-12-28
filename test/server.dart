@@ -1,9 +1,10 @@
-import './lib/main.dart';
+import '../lib/expresso.dart';
 
 void main() {
+    
   final port = 4040;
   final app = Expresso();
-
+ 
   app.route(
     Route(
       path: '/route\$',
@@ -42,7 +43,7 @@ void main() {
   );
 
   app.listen(
-    port: 4040,
+    port: port,
     callback: () => print('Server listeting on port $port'),
   );
 }
