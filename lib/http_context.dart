@@ -12,6 +12,8 @@ class HttpContext {
 
   get uri => this._request.uri;
 
+  get method => this._request.method;
+
   get body async {
     String content = await this._request.transform(utf8.decoder).join();
     return jsonDecode(content) as Map;

@@ -5,21 +5,21 @@ void main() {
   var app = Expresso();
 
   app.get(
-    path: '/text',
+    path: 'text',
     callback: (ctx) async {
       ctx.text('text');
     },
   );
 
   app.get(
-    path: '/html',
+    path: 'html',
     callback: (ctx) async {
       ctx.html('<h1>html</h1>');
     },
   );
 
   app.get(
-    path: '/json',
+    path: 'json',
     callback: (ctx) async {
       ctx
         ..statusCode(200)
@@ -28,11 +28,18 @@ void main() {
   );
 
   app.post(
-    path: '/post',
+    path: 'post',
     callback: (ctx) async {
       ctx
         ..statusCode(500)
         ..json(await ctx.body);
+    },
+  );
+
+   app.get(
+    path: 'user/[0-9]*\$',
+    callback: (ctx) async {
+      ctx.text(ctx.uri.path);
     },
   );
 
