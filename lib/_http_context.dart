@@ -48,4 +48,14 @@ class HttpContext {
 
     this.close();
   }
+
+  file(path) async {
+    final File file = File(path);
+    if (await file.exists()) {
+      await file.openRead().pipe(this.response);
+      this.close();
+    } else {
+      throw new Exception('File doesn\'t exits');
+    }
+  }
 }
