@@ -1,45 +1,43 @@
-import './lib/expresso.dart';
+import './lib/main.dart';
 
 void main() {
-  var port = 4040;
-  var app = Expresso();
+  final port = 4040;
+  final app = Expresso();
 
-  app.get(
-    path: 'text',
-    callback: (ctx) async {
-      ctx.text('text');
-    },
+  app.route(
+    Route(
+      path: '/route\$',
+      middlewares: [(ctx) => print('middelware: ${ctx.uri.queryParameters}')],
+      handler: (ctx) => ctx.text(ctx.uri.path),
+    ),
   );
 
   app.get(
-    path: 'html',
-    callback: (ctx) async {
-      ctx.html('<h1>html</h1>');
-    },
+    path: '/text\$',
+    handler: (ctx) => ctx.text('${ctx.uri.path} ${ctx.uri.queryParameters}'),
   );
 
   app.get(
-    path: 'json',
-    callback: (ctx) async {
-      ctx
-        ..statusCode(200)
-        ..json({'key': 'value'});
-    },
+    path: '/text/[0-9]*\$',
+    handler: (ctx) => ctx.text(ctx.uri.path),
+  );
+
+  app.get(
+    path: '/html\$',
+    handler: (ctx) => ctx.html('<h1>html</h1>'),
+  );
+
+  app.get(
+    path: '/json\$',
+    handler: (ctx) => ctx.json({'key': 'value'}),
   );
 
   app.post(
-    path: 'post',
-    callback: (ctx) async {
+    path: '/post',
+    handler: (ctx) async {
       ctx
         ..statusCode(500)
         ..json(await ctx.body);
-    },
-  );
-
-   app.get(
-    path: 'user/[0-9]*\$',
-    callback: (ctx) async {
-      ctx.text(ctx.uri.path);
     },
   );
 

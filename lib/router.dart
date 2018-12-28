@@ -1,21 +1,18 @@
 import './route.dart';
 
 class Router {
-  Map<String, Route> routes = Map();
+  List<Route> routes = [];
 
-  Route operator [](String path) {
-    for (String regex in this.routes.keys) {
-      RegExp regExp = new RegExp(regex);
+  Route get(String path) {
+    for (Route route in this.routes) {
 
-      if (regExp.hasMatch(path)) {
-        return this.routes[regex];
+      if (route.regex.hasMatch(path)) {
+        return route;
       }
     }
 
     return null;
   }
 
-  void operator []=(String regex, Route route) {
-    this.routes[regex] = route;
-  }
+  void add(Route route) => this.routes.add(route);
 }

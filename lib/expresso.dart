@@ -6,47 +6,95 @@ class Expresso {
   int _port;
   String _host;
   HttpServer _server;
-  final Router router = Router();
+  final Router _router = Router();
 
   _handleRequest(HttpRequest request) async {
     final ctx = HttpContext(request);
 
     try {
-      final route = this.router[request.uri.path];
+      final route = this._router.get(ctx.uri.path);
 
-      if (route != null && ctx.method == route.method) {
-        route.callback(ctx);
+      if (route != null &&
+          (route.method == null || route.method == ctx.method)) {
+        if (route.middlewares != null) {
+          route.middlewares.forEach((middleware) => middleware(ctx));
+        }
+
+        route.handler(ctx);
       } else {
         ctx.text('404 page not found');
       }
     } catch (e) {
-      ctx.text(e);
+      print(e);
+      ctx.text('500 Internal server error');
     }
-
-    print('Request handled. ${request.uri.path}');
   }
 
   /*
     Http methods
   */
-  use(
-      {String method = '',
-      String path = '',
-      Function(HttpContext ctx) callback}) {
-    this.router[path] = Route(method, path, callback);
+
+  route(Route route) => this._router.add(route);
+
+  get({
+    String path,
+    List<Function(HttpContext ctx)> middlewares,
+    Function(HttpContext ctx) handler,
+  }) {
+    this.route(
+      Route(
+        method: 'GET',
+        path: path,
+        middlewares: middlewares,
+        handler: handler,
+      ),
+    );
   }
 
-  get({String path = '', Function(HttpContext ctx) callback}) =>
-      this.use(method: 'GET', path: path, callback: callback);
+  post({
+    String path,
+    List<Function(HttpContext ctx)> middlewares,
+    Function(HttpContext ctx) handler,
+  }) {
+    this.route(
+      Route(
+        method: 'POST',
+        path: path,
+        middlewares: middlewares,
+        handler: handler,
+      ),
+    );
+  }
 
-  post({String path = '', Function(HttpContext ctx) callback}) =>
-      this.use(method: 'POST', path: path, callback: callback);
+  put({
+    String path,
+    List<Function(HttpContext ctx)> middlewares,
+    Function(HttpContext ctx) handler,
+  }) {
+    this.route(
+      Route(
+        method: 'PUT',
+        path: path,
+        middlewares: middlewares,
+        handler: handler,
+      ),
+    );
+  }
 
-  put({String path = '', Function(HttpContext ctx) callback}) =>
-      this.use(method: 'PUT', path: path, callback: callback);
-
-  delete({String path = '', Function(HttpContext ctx) callback}) =>
-      this.use(method: 'DELETE', path: path, callback: callback);
+  delete({
+    String path,
+    List<Function(HttpContext ctx)> middlewares,
+    Function(HttpContext ctx) handler,
+  }) {
+    this.route(
+      Route(
+        method: 'DELETE',
+        path: path,
+        middlewares: middlewares,
+        handler: handler,
+      ),
+    );
+  }
 
   listen({host = '127.0.0.1', int port = 4040, Function callback}) async {
     if (this._server != null) {

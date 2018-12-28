@@ -2,36 +2,36 @@ import 'dart:io';
 import 'dart:convert';
 
 class HttpContext {
-  HttpRequest _request;
-  HttpResponse _response;
+  HttpRequest request;
+  HttpResponse response;
 
   HttpContext(HttpRequest request) {
-    this._request = request;
-    this._response = request.response;
+    this.request = request;
+    this.response = request.response;
   }
 
-  get uri => this._request.uri;
+  get uri => this.request.uri;
 
-  get method => this._request.method;
+  get method => this.request.method;
 
   get body async {
-    String content = await this._request.transform(utf8.decoder).join();
+    String content = await this.request.transform(utf8.decoder).join();
     return jsonDecode(content) as Map;
   }
 
   statusCode(int code) {
-    this._response.statusCode = code;
+    this.response.statusCode = code;
   }
 
   text(String content) {
-    this._response
+    this.response
       ..headers.set('Content-Type', 'text/plain')
       ..write(content)
       ..close();
   }
 
   html(String content) {
-    this._response
+    this.response
       ..headers.set('Content-Type', 'text/html')
       ..write(content)
       ..close();
@@ -41,7 +41,7 @@ class HttpContext {
 
     final json = jsonEncode(content);
 
-    this._response
+    this.response
       ..headers.set('Content-Type', 'application/json')
       ..write(json)
       ..close();
