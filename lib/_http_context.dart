@@ -19,9 +19,11 @@ class HttpContext {
     return jsonDecode(content) as Map;
   }
 
-  statusCode(int code) => this.response.statusCode = code;
+  setStatusCode(int code) => this.response.statusCode = code;
 
   close() => this.response.close();
+
+  addHeader(String key, String value) => this.response.headers.add(key, value);
 
   text(String content) {
     this.response
