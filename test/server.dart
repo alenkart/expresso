@@ -1,10 +1,9 @@
 import '../lib/expresso.dart';
 
 void main() {
-    
   final port = 4040;
   final app = Expresso();
- 
+
   app.route(
     Route(
       path: '/route\$',
@@ -29,6 +28,15 @@ void main() {
   );
 
   app.get(
+    path: '/index\$',
+    handler: (ctx) {
+      ctx
+        ..addHeader('Content-Type', 'text/html')
+        ..file('./index.html');
+    },
+  );
+
+  app.get(
     path: '/json\$',
     handler: (ctx) => ctx.json({'key': 'value'}),
   );
@@ -37,13 +45,13 @@ void main() {
     path: '/post',
     handler: (ctx) async {
       ctx
-        ..statusCode(500)
+        ..setStatusCode(500)
         ..json(await ctx.body);
     },
   );
 
   app.listen(
     port: port,
-    callback: () => print('Server listeting on port $port'),
+    callback: () => print('Server listening on port $port'),
   );
 }
