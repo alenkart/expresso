@@ -96,6 +96,51 @@ class Expresso {
     );
   }
 
+  patch({
+    String path,
+    List<Function(HttpContext ctx)> middlewares,
+    Function(HttpContext ctx) handler,
+  }) {
+    this.route(
+      Route(
+        method: 'PATCH',
+        path: path,
+        middlewares: middlewares,
+        handler: handler,
+      ),
+    );
+  }
+
+  head({
+    String path,
+    List<Function(HttpContext ctx)> middlewares,
+    Function(HttpContext ctx) handler,
+  }) {
+    this.route(
+      Route(
+        method: 'HEAD',
+        path: path,
+        middlewares: middlewares,
+        handler: handler,
+      ),
+    );
+  }
+
+  options({
+    String path,
+    List<Function(HttpContext ctx)> middlewares,
+    Function(HttpContext ctx) handler,
+  }) {
+    this.route(
+      Route(
+        method: 'OPTIONS',
+        path: path,
+        middlewares: middlewares,
+        handler: handler,
+      ),
+    );
+  }
+
   listen({host = '127.0.0.1', int port = 4040, Function callback}) async {
     if (this._server != null) {
       return;
