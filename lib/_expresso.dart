@@ -8,28 +8,6 @@ class Expresso {
   HttpServer _server;
   final Router _router = Router();
 
-  _handleRequest(HttpRequest request) async {
-    final ctx = HttpContext(request);
-
-    try {
-      final route = this._router.get(ctx.uri.path);
-
-      if (route != null &&
-          (route.method == null || route.method == ctx.method)) {
-        if (route.middlewares != null) {
-          route.middlewares.forEach((middleware) => middleware(ctx));
-        }
-
-        route.handler(ctx);
-      } else {
-        ctx.text('404 page not found');
-      }
-    } catch (e) {
-      print(e);
-      ctx.text('500 Internal server error');
-    }
-  }
-
   /*
     Http methods
   */
@@ -153,7 +131,7 @@ class Expresso {
     callback();
 
     await for (HttpRequest request in this._server) {
-      this._handleRequest(request);
+      this._router.handle(request);
     }
   }
 }

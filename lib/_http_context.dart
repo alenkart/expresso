@@ -1,63 +1,12 @@
 import 'dart:io';
-import 'dart:convert';
+import './expresso.dart';
 
 class HttpContext {
-  HttpRequest request;
-  HttpResponse response;
+  HttpContextRequest request;
+  HttpContextResponse response;
 
   HttpContext(HttpRequest request) {
-    this.request = request;
-    this.response = request.response;
-  }
-
-  get uri => this.request.uri;
-
-  get method => this.request.method;
-
-  get body async {
-    String content = await this.request.transform(utf8.decoder).join();
-    return jsonDecode(content) as Map;
-  }
-
-  setStatusCode(int code) => this.response.statusCode = code;
-
-  close() => this.response.close();
-
-  addHeader(String key, String value) => this.response.headers.add(key, value);
-
-  text(String content) {
-    this.response
-      ..headers.set('Content-Type', 'text/plain')
-      ..write(content);
-
-    this.close();
-  }
-
-  html(String content) {
-    this.response
-      ..headers.set('Content-Type', 'text/html')
-      ..write(content);
-
-    this.close();
-  }
-
-  json(Map content) {
-    final json = jsonEncode(content);
-
-    this.response
-      ..headers.set('Content-Type', 'application/json')
-      ..write(json);
-
-    this.close();
-  }
-
-  file(path) async {
-    final File file = File(path);
-    if (await file.exists()) {
-      await file.openRead().pipe(this.response);
-      this.close();
-    } else {
-      throw new Exception('File doesn\'t exits');
-    }
+    this.request = HttpContextRequest(request);
+    this.response = HttpContextResponse(request);
   }
 }
