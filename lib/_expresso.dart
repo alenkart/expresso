@@ -8,6 +8,10 @@ class Expresso {
   HttpServer _server;
   final Router _router = Router();
 
+  Expresso({host = '127.0.0.1', port = 4040})
+      : this._host = host,
+        this._port = port;
+
   /*
     Http methods
   */
@@ -119,14 +123,12 @@ class Expresso {
     );
   }
 
-  listen({host = '127.0.0.1', int port = 4040, Function callback}) async {
+  listen({Function callback}) async {
     if (this._server != null) {
       return;
     }
 
-    this._port = port;
-    this._host = host;
-    this._server = await HttpServer.bind(host, port);
+    this._server = await HttpServer.bind(this._host, this._port);
 
     callback();
 
